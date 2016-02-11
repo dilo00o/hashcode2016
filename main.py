@@ -9,16 +9,31 @@ def main(file):
 
     warehouses = [Warehouse(w,i) for i,w in enumerate(d['warehouses'])]
     WEIGHTS = d['products_weights']
-    orders = d['orders']
-    drones = [Drone(i, d['max_load']) for i in range(d['drone_number'])]
+    raw_orders = d['orders']
+    orders = []
+    drones = [Drone(i, items) for i in range(d['drone_number'])]
     output = Outputter()
+
+    for order_id, order in enumerate(raw_orders):
+        x, y, items = order
+        weight = 0
+        used_items = []
+        for item in items:
+            if weight + WEIGHTS[item] > d['orders']:
+                orders.append((order_id, used_items))
+                used_items = []
+                weight = 0
+            else:
+                weight += WEIGHTS[item]
+                used_items.append(item)
+
 
 
     for step in range(d['deadline']):
         map(lambda x: x.step(), drones)
         available_drones = list(filter(lambda x: not x.is_occupied()))
 
-        for order in orders:
+        for order_id, order in orders:
             destX, destY, order_products = order
 
             def dist(warehouse):
@@ -51,3 +66,9 @@ def main(file):
                         drone.unload()
                         output.deliver(drone, order_id, item, 1)
                         break
+
+    return output
+
+
+if __name__ == '__main__':
+    main('busy_day.in')
