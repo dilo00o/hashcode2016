@@ -1,7 +1,8 @@
 from math import ceil, sqrt
 
-class drone:
-    def __init__(self, weight_carried, item_available):
+class Drone:
+    def __init__(self, id, weight_carried, item_available):
+        self.id = id
         self.posX, self.posY = 0, 0
         self.weight_carried = weight_carried
         self.turns = 0

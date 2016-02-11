@@ -7,6 +7,6 @@ class Warehouse:
 
     def charge(self, drone):
         for i in drones.needed:
-            charge = self.stocks.charge(drone.needed[i], i))
+            charge = self.stocks.charge(drone.needed[i], i)
             drone.loaded[i] += charge
             drone.needed[i] -= charge
