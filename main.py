@@ -7,7 +7,7 @@ def main(file):
     with open(file) as handler:
         d = parse(handler)
 
-    warehouses = [Warehouse(w) for w in d['warehouses']]
+    warehouses = [Warehouse(w,i) for i,w in enumerate(d['warehouses'])]
     WEIGHTS = d['products_weights']
     orders = d['orders']
     drones = [Drone(i, d['max_load']) for i in range(d['drone_number'])]
@@ -30,6 +30,7 @@ def main(file):
             if available_drones:
                 drone = available_drones.pop()
                 got_items = [False] * len(order_products)
+                stack = []
                 for dist, warehouse in sorted_warehouses:
                     used = False
                     for i, item in enumerate(order_products):
@@ -39,9 +40,12 @@ def main(file):
                             warehouse.charge(drone, item)
                             got_items[i] = True
                             used = True
-                    if used:
-                        drone.goto(warehouse.locX, warehouse.locY)
+                            stack.append((warehouse.id, warehouse.locX, warehouse.locY))
                     if all(got_items):
+                        stack = reversed(stack)
+                        for instruction in stack:
+                            drone.goto(instruction[1], instruction[2])
+                            output.load(drone, order_id, item, 1)
                         drone.goto(destX, destY)
                         drone.unload()
                         break
