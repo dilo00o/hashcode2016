@@ -22,57 +22,61 @@ def main(file):
         weight = 0
         used_items = []
         for item in items:
-            if weight + WEIGHTS[item] > d['max_load']:
+            if weight + WEIGHTS[item] >= d['max_load']:
                 orders.append((order_id, (x, y, used_items)))
                 used_items = []
                 weight = 0
-            else:
-                weight += WEIGHTS[item]
-                used_items.append(item)
 
-
+            weight += WEIGHTS[item]
+            used_items.append(item)
+        if used_items:
+            orders.append((order_id, (x, y, used_items)))
 
     for step in range(d['deadline']):
         map(lambda x: x.step(), drones)
         available_drones = list(filter(lambda x: not x.is_occupied, drones))
 
-        for order_id, order in orders:
-            destX, destY, order_products = order
+        if not orders:
+            break
+        order_id, order = orders.pop()
+        destX, destY, order_products = order
 
-            def dist(warehouse):
-                d = ceil(sqrt((warehouse.locX - destX)**2 + (warehouse.locY - destY)**2))
-                return (d, warehouse)
+        def dist(warehouse):
+            d = ceil(sqrt((warehouse.locX - destX)**2 + (warehouse.locY - destY)**2))
+            return (d, warehouse)
 
-            sorted_warehouses = sorted(map(dist, warehouses), key=lambda x: x[0])
+        sorted_warehouses = sorted(map(dist, warehouses), key=lambda x: x[0])
 
-            if available_drones:
-                drone = available_drones.pop()
-                got_items = [False] * len(order_products)
-                stack = []
-                for dist, warehouse in sorted_warehouses:
-                    used = False
-                    for i, item in enumerate(order_products):
-                        if got_items[i]:
-                            continue
-                        if warehouse.has_item(item):
-                            warehouse.charge(drone, item)
-                            got_items[i] = True
-                            used = True
-                            stack.append((warehouse, item))
-                            output.load(drone, warehouse, item, 1)
-                    if all(got_items):
-                        stack = reversed(stack)
-                        for inst in stack:
-                            drone.goto(inst[0].locX, inst[0].locY)
-                            output.load(drone, inst[0], inst[1], 1)
-                        drone.goto(destX, destY)
-                        drone.unload()
-                        for item in order_products:
-                            output.deliver(drone, order_id, item, 1)
-                        break
-
+        if available_drones:
+            drone = available_drones.pop()
+            got_items = [False] * len(order_products)
+            stack = []
+            for dist, warehouse in sorted_warehouses:
+                used = False
+                for i, item in enumerate(order_products):
+                    if got_items[i]:
+                        continue
+                    if warehouse.has_item(item):
+                        warehouse.charge(drone, item)
+                        got_items[i] = True
+                        used = True
+                        stack.append((warehouse, item))
+                if all(got_items):
+                    stack = reversed(stack)
+                    for inst in stack:
+                        drone.goto(inst[0].locX, inst[0].locY)
+                        output.load(drone, inst[0], inst[1], 1)
+                    drone.goto(destX, destY)
+                    drone.unload()
+                    for item in order_products:
+                        output.deliver(drone, order_id, item, 1)
+                    break
+        else:
+            orders.append((order_id, order))
     return output
 
 
 if __name__ == '__main__':
-    main('busy_day.in')
+    open("busy_day.sol", "w").write(str(main('busy_day.in')))
+    open("mother_of_all_warehouses.sol", "w").write(str(main('mother_of_all_warehouses.in')))
+    open("redundancy.sol", "w").write(str(main('redundancy.in')))
