@@ -1,7 +1,7 @@
 SOURCES=$(wildcard *.py)
 MAIN=main.py
-$(PYTHON)=python3
-$(ZIP)=code.zip
+PYTHON=python3
+ZIP=code.zip
 
 all:$(MAIN)
 	$(PYTHON) $?
