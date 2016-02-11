@@ -41,11 +41,13 @@ def main(file):
                             got_items[i] = True
                             used = True
                             stack.append((warehouse.id, warehouse.locX, warehouse.locY))
+                            output.load(drone, warehouse, item, 1)
                     if all(got_items):
                         stack = reversed(stack)
                         for instruction in stack:
                             drone.goto(instruction[1], instruction[2])
-                            output.load(drone, order_id, item, 1)
+                            output.load(drone.id, order_id, item, 1)
                         drone.goto(destX, destY)
                         drone.unload()
+                        output.deliver(drone, order_id, item, 1)
                         break
