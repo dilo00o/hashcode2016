@@ -1,20 +1,20 @@
 from math import ceil, sqrt
-from item import Items
 
 class drone:
-    def __init__(self, weight_carried):
+    def __init__(self, weight_carried, item_available):
         self.posX, self.posY = 0, 0
         self.weight_carried = weight_carried
         self.turns = 0
-        self.needed = Items()
-        self.loaded = Items()
+        self.needed = [0 for i in range(item_available)]
+        self.loaded = [0 for i in range(item_available)]
 
     def fetch(self, posX, posY):
         self.turns += shortest_path(posX, posY, self.posX, self.posY)
         self.posX = posX
         self.posY = posY
 
-    def load(self, item):
+    def load(self, item, warehouse):
+        warehouse.charge(self)
 
 
 
