@@ -1,10 +1,10 @@
 SOURCES=$(wildcard *.py)
 MAIN=main.py
-PYTHON=python3
+PYTHON=python
 ZIP=code.zip
 
-all:$(MAIN)
-	$(PYTHON) $?
+all:$(MAIN) $(ZIP)
+	$(PYTHON) $<
 
 $(ZIP):$(SOURCES)
 	zip -r $@ $?

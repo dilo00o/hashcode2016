@@ -34,20 +34,22 @@ def main(file):
 
     for step in range(d['deadline']):
         map(lambda x: x.step(), drones)
-        available_drones = list(filter(lambda x: not x.is_occupied, drones))
 
+
+        available_drones = list(filter(lambda x: not x.is_occupied, drones))
         if not orders:
             break
-        order_id, order = orders.pop()
-        destX, destY, order_products = order
 
-        def dist(warehouse):
-            d = ceil(sqrt((warehouse.locX - destX)**2 + (warehouse.locY - destY)**2))
-            return (d, warehouse)
+        while available_drones:
+            if not orders:
+                break
+            order_id, order = orders.pop()
+            destX, destY, order_products = order
+            def dist(warehouse):
+                d = ceil(sqrt((warehouse.locX - destX)**2 + (warehouse.locY - destY)**2))
+                return (d, warehouse)
 
-        sorted_warehouses = sorted(map(dist, warehouses), key=lambda x: x[0])
-
-        if available_drones:
+            sorted_warehouses = sorted(map(dist, warehouses), key=lambda x: x[0])
             drone = available_drones.pop()
             got_items = [False] * len(order_products)
             stack = []
@@ -71,8 +73,7 @@ def main(file):
                     for item in order_products:
                         output.deliver(drone, order_id, item, 1)
                     break
-        else:
-            orders.append((order_id, order))
+
     return output
 
 
