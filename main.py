@@ -64,3 +64,9 @@ def main(file):
                         drone.goto(destX, destY)
                         drone.unload()
                         break
+
+    return output
+
+
+if __name__ == '__main__':
+    main('busy_day.in')
