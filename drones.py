@@ -1,21 +1,40 @@
 from math import ceil, sqrt
 
 class Drone:
-    def __init__(self, id, weight_carried, item_available):
+    def __init__(self, id, max_weight):
         self.id = id
         self.posX, self.posY = 0, 0
-        self.weight_carried = weight_carried
+        self.max_weight = max_weight
         self.turns = 0
-        self.needed = [0 for i in range(item_available)]
-        self.loaded = [0 for i in range(item_available)]
+        self.carried = []
 
-    def fetch(self, posX, posY):
+    def goto(self, posX, posY):
         self.turns += shortest_path(posX, posY, self.posX, self.posY)
         self.posX = posX
         self.posY = posY
 
-    def load(self, item, warehouse):
-        warehouse.charge(self)
+    def load(self, item_id, quantity=1):
+        if self.weight + WEIGHTS[item_id] * quantity > self.max_weight:
+            raise Exeption("No more space")
+        self.carried += [item_id] * quantity
+        self.turns += 1
+
+    def unload(self):
+        self.carried = []
+        self.turns += 1
+
+    def step(self):
+        if self.turns > 0:
+            self.turns -= 1
+
+    @property
+    def is_occupied(self):
+        return bool(self.turns)
+
+
+    @property
+    def weight(self):
+        return sum(map(lambda x: WEIGHTS[x], self.carried))
 
 
 
