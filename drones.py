@@ -14,7 +14,7 @@ class Drone:
         self.posY = posY
 
     def load(self, item_id, quantity=1):
-        if self.weight + WEIGHTS[item_id] * quantity > self.max_weight:
+        if self.weight + self.WEIGHTS[item_id] * quantity > self.max_weight:
             raise Exeption("No more space")
         self.carried += [item_id] * quantity
         self.turns += 1
@@ -34,7 +34,7 @@ class Drone:
 
     @property
     def weight(self):
-        return sum(map(lambda x: WEIGHTS[x], self.carried))
+        return sum(map(lambda x: self.WEIGHTS[x], self.carried))
 
 
 

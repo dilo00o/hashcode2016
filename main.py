@@ -3,6 +3,7 @@ from drones import Drone
 from instructions_parser import parse
 from collections import defaultdict
 from outputter import Outputer
+from math import ceil, sqrt
 
 def main(file):
     with open(file) as handler:
@@ -10,6 +11,7 @@ def main(file):
 
     warehouses = [Warehouse(w,i) for i,w in enumerate(d['warehouses'])]
     WEIGHTS = d['products_weights']
+    Drone.WEIGHTS = WEIGHTS
     raw_orders = d['orders']
     orders = []
     drones = [Drone(i, d['max_load']) for i in range(d['drone_number'])]
@@ -21,7 +23,7 @@ def main(file):
         used_items = []
         for item in items:
             if weight + WEIGHTS[item] > d['max_load']:
-                orders.append((order_id, used_items))
+                orders.append((order_id, (x, y, used_items)))
                 used_items = []
                 weight = 0
             else:
