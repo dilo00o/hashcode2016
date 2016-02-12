@@ -11,4 +11,4 @@ $(ZIP):$(SOURCES)
 
 clean:
 	rm -f code.zip
-	rm -f *.out
+	rm -f *.sol
