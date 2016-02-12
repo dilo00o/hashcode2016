@@ -33,7 +33,7 @@ def main(file):
             orders.append((order_id, (x, y, used_items)))
 
     for step in range(d['deadline']):
-        map(lambda x: x.step(), drones)
+        list(map(lambda x: x.step(), drones))
 
 
         available_drones = list(filter(lambda x: not x.is_occupied, drones))
